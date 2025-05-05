@@ -103,6 +103,19 @@
 		i TargetMatrix FillMatrixRow
 	-1 +LOOP
 ;
+
+: .LaTeXMatrix ( Matrix --  Prints out the matrix in LaTex format )
+   ." \begin{bmatrix}" CR
+   DUP MatrixRows 1 + 1 DO \ loop through the rows, 1 offset
+	DUP MatrixColumns 1 + 1 DO
+		DUP j i ROT Matrix@ . \ print the 
+		DUP MatrixColumns i > IF ." & " THEN \ Separator for all but the last one
+	LOOP
+	." \\" CR
+   LOOP
+   ." \end{bmatrix}" CR
+;
+
 \ Quick test matrix
 2 3 InitMatrix TestMatrix
 1 1 1 TestMatrix Matrix!
