@@ -116,11 +116,69 @@
    ." \end{bmatrix}" CR
 ;
 
+: MultiplyRow ( Coefficient Row Matrix -- Multiples a single row by Coefficient )
+	
+	DUP MatrixColumns ROT ROT \ need to know how many entries per row
+		
+	1 SWAP OffsetMatrix \ get to the start of the row
+	SWAP 0 DO 
+		DUP @ 2 PICK * OVER ! 1 CELLS + \ fetch, multiply and bury
+	LOOP
+	2DROP 
+;
+
+: DivideRow ( Coefficient Row Matrix -- Divides a single row by Coefficient )
+	
+	DUP MatrixColumns ROT ROT \ need to know how many entries per row
+		
+	1 SWAP OffsetMatrix \ get to the start of the row
+	SWAP 0 DO 
+		DUP @ 2 PICK / OVER ! 1 CELLS + \ fetch, multiply and bury
+	LOOP
+	2DROP 
+;
+
+: MultAndAddRows { Coefficient Row1 Row2 TargetMatrix -- Multiply Row1 by Coefficient and adds it to Row2, storing the result in Row2 and leaving Row1 unchanged }
+	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
+		Row1 i TargetMatrix Matrix@ Coefficient * 
+		Row2 i TargetMatrix Matrix@ + 
+		Row2 i TargetMatrix Matrix! 
+	LOOP
+	
+;
+
+: DivAndAddRows { Coefficient Row1 Row2 TargetMatrix -- Divide Row1 by Coefficient and adds it to Row2, storing the result in row2 and leaving row 1 unchanged }
+	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
+		Row1 i TargetMatrix Matrix@ Coefficient /
+		Row2 i TargetMatrix Matrix@ + 
+		Row2 i TargetMatrix Matrix! 
+	LOOP
+	
+;
+: SubtractRows { Row1 Row2 TargetMatrix -- Subtracts Row1 From Row2, storing the result in Row2 and leaving Row1 unchanged } 
+	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
+		Row2 i TargetMatrix Matrix@  
+		Row1 i TargetMatrix Matrix@ -
+		Row2 i TargetMatrix Matrix! 
+	LOOP
+	
+;
+
+: SwapRows { Row1 Row2 TargetMatrix -- Swap two rows }
+	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
+		Row1 i TargetMatrix Matrix@
+		Row2 i TargetMatrix Matrix@  
+		Row1 i TargetMatrix Matrix! 
+		Row2 i TargetMatrix Matrix! 
+	LOOP
+	
+;
+
 \ Quick test matrix
-2 3 InitMatrix TestMatrix
-1 1 1 TestMatrix Matrix!
-2 1 2 TestMatrix Matrix!
-3 1 3 TestMatrix Matrix!
-4 2 1 TestMatrix Matrix!
-5 2 2 TestMatrix Matrix!
-6 2 3 TestMatrix Matrix!
+3 4 InitMatrix TestMatrix
+ 1  2  3  4
+ 5  6  7  8
+ 9 10 11 12
+TestMatrix FillMatrix
+
+
