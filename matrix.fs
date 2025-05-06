@@ -155,6 +155,15 @@
 	LOOP
 	
 ;
+: AddRows { Row1 Row2 TargetMatrix -- Add Row1 To Row2, storing the result in Row2 and leaving Row1 unchanged } 
+	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
+		Row2 i TargetMatrix Matrix@  
+		Row1 i TargetMatrix Matrix@ +
+		Row2 i TargetMatrix Matrix! 
+	LOOP
+	
+;
+
 : SubtractRows { Row1 Row2 TargetMatrix -- Subtracts Row1 From Row2, storing the result in Row2 and leaving Row1 unchanged } 
 	TargetMatrix MatrixColumns 1+ 1 DO \ Loop through the column
 		Row2 i TargetMatrix Matrix@  
