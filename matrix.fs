@@ -191,25 +191,48 @@
 		        OVER j SWAP i SWAP  Matrix! \ bury 
 		LOOP
 	LOOP
-
+	2DROP
 ;
 
 : S/ ( N Matrix -- Divide the matrix elements by N )
 	\ technically could just loop through the memories but worth doing it the right way
 	DUP MatrixRows 1+ 1 DO
 		DUP MatrixColumns 1+ 1 DO
-			2DUP j i ROT Matrix@ SWAP / \ fetch and divide, order matters here
+			2DUP j i ROT Matrix@ SWAP / \ fetch and divide, order matters her
 		        OVER j SWAP i SWAP  Matrix! \ bury 
 		LOOP
 	LOOP
-
+	2DROP
 ;
 
+
+
+: CopyMatrix ( Matrix1 Matrix2 -- Copies the contents of matrix1 to matrix2 ) 
+	DUP MatrixRows 1+ 1 DO
+		DUP MatrixColumns 1+ 1 DO
+			OVER j i ROT Matrix@ \ fetch row j column i from Matrix1
+			OVER j SWAP i SWAP Matrix! \ and bury it in matrix2
+		LOOP
+	LOOP
+	2DROP
+; 
+
+
+: DuplicateMatrix ( Matrix1 -- Creates a new matrix with the same diimensions and contents as the first matrix with the name being the next word after DuplicateMatrix ) ;
+
+: TransposeMatrix ( Matrix -- Transpose the matrix, swap dimensions and copy elements ) ; 
+: M+ ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
+: M- ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
+
+
 \ Quick test matrix
-3 4 InitMatrix TestMatrix
- 1  2  3  4
- 5  6  7  8
- 9 10 11 12
+2 3 InitMatrix TestMatrix
+ 1  2  3  \ 4
+ 5  6  7  \ 8
+\ 9 10 11 12
 TestMatrix FillMatrix
 
-
+2 3 InitMatrix SampleMatrix
+9 10 11
+12 13 14
+SampleMatrix FillMatrix
