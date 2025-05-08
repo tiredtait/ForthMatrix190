@@ -183,6 +183,28 @@
 	
 ;
 
+: S* ( N Matrix -- Multiplies the matrix elements by N )
+	\ technically could just loop through the memories but worth doing it the right way
+	DUP MatrixRows 1+ 1 DO
+		DUP MatrixColumns 1+ 1 DO
+			2DUP j i ROT Matrix@ * \ fetch and multiply
+		        OVER j SWAP i SWAP  Matrix! \ bury 
+		LOOP
+	LOOP
+
+;
+
+: S/ ( N Matrix -- Divide the matrix elements by N )
+	\ technically could just loop through the memories but worth doing it the right way
+	DUP MatrixRows 1+ 1 DO
+		DUP MatrixColumns 1+ 1 DO
+			2DUP j i ROT Matrix@ SWAP / \ fetch and divide, order matters here
+		        OVER j SWAP i SWAP  Matrix! \ bury 
+		LOOP
+	LOOP
+
+;
+
 \ Quick test matrix
 3 4 InitMatrix TestMatrix
  1  2  3  4
