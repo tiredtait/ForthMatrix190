@@ -22,3 +22,13 @@ MultAndAddRows ( Coefficient Row1 Row2 TargetMatrix -- Multiply Row1 by Coeffici
 DivAndAddRows ( Coefficient Row1 Row2 TargetMatrix -- Divide Row1 by Coefficient and adds it to Row2, storing the result in row2 and leaving row 1 unchanged )
 SubtractRows ( Row1 Row2 TargetMatrix -- Subtracts Row1 From Row2, storing the result in Row2 and leaving Row1 unchanged ) 
 SwapRows ( Row1 Row2 TargetMatrix -- Swap two rows )
+S*, S/ ( N Matrix -- Multiplies/divides the matrix by the scalar value
+DuplicateMatris ( Matrix "<spaces>" Name -- Creates a new matrix with the same idmenstions and value as the first matrix with the address sotred in word Name )
+
+Todo:: 
+
+M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
+
+TransposeMatrix
+
+

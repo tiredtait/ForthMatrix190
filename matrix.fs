@@ -220,6 +220,25 @@
 
 : DuplicateMatrix ( Matrix1 -- Creates a new matrix with the same diimensions and contents as the first matrix with the name being the next word after DuplicateMatrix ) ;
 
+: MatrixSize ( Matrix -- SizeOfMatrix puts the number of elements [row * col] on stack)
+	DUP MatrixColumns SWAP MatrixRows * 
+;
+
+: DuplicateMatrix ( Row Col -- creates a matrix of Row by Col )  ( var name )
+	\ Data format has the rows concatinated to create the colums with two extra cells at the beginning containing the number of rows and the number of columns
+	VARIABLE HERE CELL - \ ( Matrix NewMatrix )
+	OVER MatrixSize 2 + CELLS ALLOT ( Matrix NewMatrix ) \ Allocate the space for a new matrix, saving the size
+	OVER MatrixRows OVER ! DUP MatrixRows . CELL + \ Write the Row number, advance 1 to column number
+	OVER MatrixColumns OVER ! DUP @ . CELL + \ same with columns
+	SWAP DUP MatrixSize SWAP 2 CELLS + ( NewMatrix MatrixSize Matrix[2] )
+
+	ROT ROT 0 DO ( Matrix NewMatrix ) \ Move the matrix pointer to the beginning of the elements and loop through
+		OVER i CELLS + @ OVER i CELLS + !  \ Copy from matrix to matrix
+	LOOP
+	DROP DROP	
+;
+
+
 : TransposeMatrix ( Matrix -- Transpose the matrix, swap dimensions and copy elements ) ; 
 : M+ ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
 : M- ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
