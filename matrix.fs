@@ -218,8 +218,6 @@
 ; 
 
 
-: DuplicateMatrix ( Matrix1 -- Creates a new matrix with the same diimensions and contents as the first matrix with the name being the next word after DuplicateMatrix ) ;
-
 : MatrixSize ( Matrix -- SizeOfMatrix puts the number of elements [row * col] on stack)
 	DUP MatrixColumns SWAP MatrixRows * 
 ;
@@ -239,19 +237,55 @@
 ;
 
 
-: TransposeMatrix ( Matrix -- Transpose the matrix, swap dimensions and copy elements ) ; 
-: M+ ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
-: M- ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) ;
+: TransposeMatrix ( Matrix -- Transpose the matrix, swap dimensions and copy elements currently works with square ) 
+	DUP MatrixRows 1 + 1 DO
+		DUP MatrixColumns 1 + 1 DO
+			i j <= IF \ only below the diagonal
+	cr ." : Coord " i . ." ," j . ." is "  DUP j i ROT Matrix@ . ." to " DUP i j ROT Matrix@ . cr ." twist "
+				DUP  i j ROT Matrix@ \ grab the two values and swap them
+				OVER j i ROT Matrix@ 
+				2 PICK i j ROT Matrix!
+				OVER j i ROT Matrix!
+			THEN
+		LOOP
+	LOOP
+	DUP MatrixRows OVER MatrixColumns
+	2 PICK ! 
+	SWAP CELL + !
+; 
+
+: M+ ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) 
+	DUP MatrixRows 1 + 1 DO
+		DUP MatrixColumns 1 + 1 DO 
+			OVER j i ROT Matrix@ 
+			OVER j i ROT Matrix@ + \ fetch and sum
+			OVER j i ROT Matrix! \ \and store
+		LOOP
+	LOOP
+	2DROP
+;
+
+
+: M- ( Matrix1 Matrix2 -- Subtract Matrix2 From Matrix1, storing the result in Matrix2 ) 
+	DUP MatrixRows 1 + 1 DO
+		DUP MatrixColumns 1 + 1 DO  
+			OVER j i ROT Matrix@ 
+			OVER j i ROT Matrix@ - \ fetch and subtract, OOP important
+			OVER j i ROT Matrix! \ \and store
+		LOOP
+	LOOP
+	2DROP
+;
 
 
 \ Quick test matrix
 2 3 InitMatrix TestMatrix
- 1  2  3  \ 4
- 5  6  7  \ 8
-\ 9 10 11 12
+ 1  2  3 
+ 5  6  7 
+ \ 9 10 11 
 TestMatrix FillMatrix
 
 2 3 InitMatrix SampleMatrix
-9 10 11
-12 13 14
+8 9 10
+11 12 13
 SampleMatrix FillMatrix

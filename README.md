@@ -24,11 +24,11 @@ SubtractRows ( Row1 Row2 TargetMatrix -- Subtracts Row1 From Row2, storing the r
 SwapRows ( Row1 Row2 TargetMatrix -- Swap two rows )
 S*, S/ ( N Matrix -- Multiplies/divides the matrix by the scalar value
 DuplicateMatris ( Matrix "<spaces>" Name -- Creates a new matrix with the same idmenstions and value as the first matrix with the address sotred in word Name )
+M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
 
 Todo:: 
 
-M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
 
-TransposeMatrix
+TransposeMatrix ( works with square matrixes )
 
 
