@@ -238,20 +238,23 @@
 
 
 : TransposeMatrix ( Matrix -- Transpose the matrix, swap dimensions and copy elements currently works with square ) 
-	DUP MatrixRows 1 + 1 DO
-		DUP MatrixColumns 1 + 1 DO
-			i j <= IF \ only below the diagonal
-	cr ." : Coord " i . ." ," j . ." is "  DUP j i ROT Matrix@ . ." to " DUP i j ROT Matrix@ . cr ." twist "
-				DUP  i j ROT Matrix@ \ grab the two values and swap them
-				OVER j i ROT Matrix@ 
-				2 PICK i j ROT Matrix!
-				OVER j i ROT Matrix!
-			THEN
+	\ put all of the elements on the stack
+	1 \ placeholder for the loop
+	OVER MatrixColumns 1 + 1 DO 
+		OVER MatrixRows 1 + 1 DO (  r_1 r_2 . . . Matrix r_n||placeholder )
+i . j . DUP . CR
+\ gotta mathhammer this part so it goes to the right place
+			SWAP DUP i j ROT Matrix@ 
+
 		LOOP
 	LOOP
-	DUP MatrixRows OVER MatrixColumns
-	2 PICK ! 
-	SWAP CELL + !
+	SWAP
+	DUP MatrixRows
+	OVER MatrixColumns 
+	2 PICK !
+	OVER 1 CELLS + ! 
+	FillMatrix 
+	DROP 	
 ; 
 
 : M+ ( Matrix1 Matrix2 -- Add Matrix1 to Matrix2, storing the result in Matrix2 ) 
@@ -281,11 +284,11 @@
 \ Quick test matrix
 2 3 InitMatrix TestMatrix
  1  2  3 
- 5  6  7 
- \ 9 10 11 
+ 4  5  6 
+ \ 8 9 10
 TestMatrix FillMatrix
 
 2 3 InitMatrix SampleMatrix
-8 9 10
 11 12 13
+14 15 16
 SampleMatrix FillMatrix
