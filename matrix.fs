@@ -362,6 +362,31 @@ i . j . DUP . CR
 	DROP
 ;
 
+: *V ( Vector1 Vector2 -- Result  Multiplies vector 1 by vector 2 and puts the result on the stack ) 
+\ note that there are different processes depending on if the vector is a row or column vector
+\ at this stage I have only read about <> by <> so that is assumed
+\ as I read more
+	DUP VectorSize 1+ 1 DO \ Multiply the elements
+		OVER i SWAP VectorElement@ OVER i SWAP VectorElement@ *
+		ROT ROT \ put this product at the back
+	LOOP
+	DROP VectorSize 1 DO \ Sum the products
+
+		+ 	
+	LOOP
+;
+
+: FetchRow ( Row Matrix -- VectorAddr Creates a row vector from the specified row of a matrix ) 
+	\ initalize the matrix
+	DUP MatrixRows 
+	2 + CELLS Allocate \ allocate the memory for the matrix 
+	RowVector OVER !  \ set the type of vector
+	OVER MatrixRows SWAP 1 CELLS + ! \ set the vector dimensions
+	\ Row Matrix Vector 
+	
+	
+;
+
 \ Quick test matrix
 2 3 InitMatrix TestMatrix
  1  2  3 
