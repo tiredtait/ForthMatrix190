@@ -114,6 +114,7 @@
 	." \\" CR
    LOOP
    ." \end{bmatrix}" CR
+   DROP
 ;
 
 : MultiplyRow ( Coefficient Row Matrix -- Multiples a single row by Coefficient )
@@ -280,6 +281,86 @@ i . j . DUP . CR
 	2DROP
 ;
 
+: ColumnVector 1 ( flag that defines vector as a column ) ;
+: RowVector 0 ( Flag that defines a vector as a row )  ;
+
+
+
+: InitVector ( Orientation ELEMENTS -- "Name" creates a new vector stored as "name" with N elements and orientation ) 
+	\ Data format has the rows concatinated to create the colums with two extra cells at the beginning, the first contains the orientation and the second contains the size of the vector
+
+	VARIABLE \ 
+	DUP 2 + CELLS ALLOT \ Vector entries plus two for keeping the size/orientation
+				 \ could probably save a cell by using +- for orientation but 
+				 \ these days memory is cheap
+	DUP 3 + CELLS HERE SWAP - \ Memory location of vector
+	( Orientation Elements Vector )
+	SWAP OVER 1 CELLS + ! \ Store the element count
+	! \ Store the orientation
+
+;
+: VectorSize ( Vector -- N puts the size of the vector on the stack ) 
+	1 CELLS + @ 
+;
+
+: VectorOrientation ( Vector -- N puts the size of the vector on the stack )
+	@
+; 
+
+: .VectorOrientation ( Vector -- Prints if a vector is column or row ) 
+	VectorOrientation ColumnVector = IF
+		." Column"
+	ELSE
+		." Row"
+	THEN
+	CR
+
+;
+
+: VectorElement@ ( element Vector -- n gets the nth element of the vector with 1 being the first )
+	SWAP 1 + CELLS + @ \ 1 offset to go to the 3rd cell
+;
+
+: VectorElement! ( content element Vector -- Sets the nth element of the vector to conent with 1 being the first )
+	SWAP 1 + CELLS + ! \ 1 offset to go to the 3rd cell
+;
+
+: FillVector ( n  . . . Vector -- Fills the vector with elements from the stack ) 
+	DUP VectorSize
+	SWAP 2 CELLS + SWAP \ offset for the housekeeping cells
+	1 - 0  SWAP DO \ Get the size of the vector, address space has an offset of 2 because the first two cells have the housekeeping information
+		SWAP OVER i CELLS + ! 
+	-1 +LOOP \ countdown
+	DROP
+; 
+
+
+: .Vector ( Vector -- Prints the vector to stdout ) 
+	DUP VectorSize 1 + 1 DO
+		DUP i SWAP VectorElement@ . 
+		DUP VectorOrientation ColumnVector = IF \ Colum vector, separate by newlines
+			CR
+		THEN
+	LOOP	
+	DROP
+;
+
+: .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
+   ." \begin{bmatrix}" CR
+	DUP VectorSize 1 + 1 DO
+		DUP i SWAP VectorElement@ . 
+			DUP VectorOrientation ColumnVector = IF \ Colum vector, vertical
+					." \\ " CR
+				ELSE \ Row vector, horizontal
+					DUP VectorSize i > IF \ last element doesn't get a separator
+						." & "
+					ELSE CR
+					THEN
+			THEN
+	LOOP	
+ ." \end{bmatrix}" CR
+	DROP
+;
 
 \ Quick test matrix
 2 3 InitMatrix TestMatrix
@@ -292,3 +373,9 @@ TestMatrix FillMatrix
 11 12 13
 14 15 16
 SampleMatrix FillMatrix
+
+ColumnVector 3 InitVector TestVectorC
+1 2 3 TestVectorC FillVector
+
+RowVector 3 InitVector TestVectorR
+5 6 7 TestVectorR FillVector

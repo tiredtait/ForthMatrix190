@@ -25,10 +25,29 @@ SwapRows ( Row1 Row2 TargetMatrix -- Swap two rows )
 S*, S/ ( N Matrix -- Multiplies/divides the matrix by the scalar value
 DuplicateMatris ( Matrix "<spaces>" Name -- Creates a new matrix with the same idmenstions and value as the first matrix with the address sotred in word Name )
 M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
+TransposeMatrix ( works with square matrixes )
+
+
+Vector functions: 
+ColumnVector ( flag that defines vector as a column )
+RowVector ( Flag that defines a vector as a row ) 
+InitVector ( Orientation ELEMENTS -- "Name" creates a new vector stored as "name" with N elements and orientation ) 
+VectorSize ( Vector -- N puts the size of the vector on the stack ) 
+VectorOrientation ( Vector -- N puts the size of the vector on the stack )
+VectorElement@ ( element Vector -- n gets the nth element of the vector with 1 being the first )
+VectorElement! ( content element Vector -- Sets the nth element of the vector to conent with 1 being the first )
+FillVector ( n  . . . Vector -- Fills the vector with elements from the stack ) 
+.VectorOrientation ( Vector -- Prints if a vector is column or row ) 
+.Vector ( Vector -- Prints the vector to stdout ) 
+.LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
 
 Todo:: 
 
+Vectors
+ - Generate
+ - Multiply
+ - extract from matrix
 
-TransposeMatrix ( works with square matrixes )
+Matrix multiplication
 
 
