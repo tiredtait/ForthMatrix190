@@ -393,6 +393,24 @@ i . j . DUP . CR
 ;
 
 
+: FetchColumn ( Column Matrix -- VectorAddr Creates a Column vector from the specified row of a matrix ) 
+	\ initalize the matrix
+	DUP MatrixRows 2 + CELLS ALLOCATE DROP \ allocate the memory for the matrix 
+	\ Set the matrix type
+	ColumnVector OVER !
+	\ Set the matrix dimensions
+	OVER MatrixRows OVER 1 CELLS + !
+	( Row Matrix Vector )
+	OVER MatrixRows 1 + 1 DO \ Need to pull elements off of the row and drop them into the vector
+		i 3 PICK 3 PICK  ( Row Matrix Vector i Row Matrix )
+		Matrix@ 
+		OVER i SWAP ( Row Matrix Vector Val i Vector )
+		Vector!
+	LOOP
+	SWAP DROP SWAP DROP
+;
+
+
 2 3 InitMatrix SampleMatrix
 11 12 13
 14 15 16
