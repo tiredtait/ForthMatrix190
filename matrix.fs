@@ -365,14 +365,18 @@ i . j . DUP . CR
 \ note that there are different processes depending on if the vector is a row or column vector
 \ at this stage I have only read about <> by <> so that is assumed
 \ as I read more
-	DUP VectorSize 1+ 1 DO \ Multiply the elements
-		OVER i SWAP Vector@ OVER i SWAP Vector@ *
-		ROT ROT \ put this product at the back
-	LOOP
-	DROP VectorSize 1 DO \ Sum the products
+	2DUP VectorSize SWAP VectorSize = IF
+		DUP VectorSize 1+ 1 DO \ Multiply the elements
+			OVER i SWAP Vector@ OVER i SWAP Vector@ *
+			ROT ROT \ put this product at the back
+		LOOP
+		DROP VectorSize 1 DO \ Sum the products
 
-		+ 	
-	LOOP
+			+ 	
+		LOOP
+	ELSE
+		2DROP -1 ." Invalid: inequal size"
+	THEN
 ;
 
 : FetchRow ( Row Matrix -- VectorAddr Creates a row vector from the specified row of a matrix ) 
@@ -421,12 +425,13 @@ ColumnVector 3 InitVector TestVectorC
 
 RowVector 3 InitVector TestVectorR
 5 6 7 TestVectorR FillVector
-5 6 7 TestVectorR FillVector
+
+
 \ Quick test matrix.
-2 3 InitMatrix TestMatrix
+3 3 InitMatrix TestMatrix
  1  2  3 
  4  5  6 
- \ 8 9 10
+ 8 9 10
 TestMatrix FillMatrix
 
 2 3 InitMatrix SampleMatrix
@@ -434,8 +439,3 @@ TestMatrix FillMatrix
 14 15 16
 SampleMatrix FillMatrix
 
-ColumnVector 3 InitVector TestVectorC
-1 2 3 TestVectorC FillVector
-
-RowVector 3 InitVector TestVectorR
-5 6 7 TestVectorR FillVector
