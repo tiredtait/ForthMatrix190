@@ -317,14 +317,13 @@ i . j . DUP . CR
 
 ;
 
-: VectorElement@ ( element Vector -- n gets the nth element of the vector with 1 being the first )
+: Vector@ ( element Vector -- n gets the nth element of the vector with 1 being the first )
 	SWAP 1 + CELLS + @ \ 1 offset to go to the 3rd cell
 ;
 
-: VectorElement! ( content element Vector -- Sets the nth element of the vector to conent with 1 being the first )
+: Vector! ( content element Vector -- Sets the nth element of the vector to conent with 1 being the first )
 	SWAP 1 + CELLS + ! \ 1 offset to go to the 3rd cell
 ;
-
 : FillVector ( n  . . . Vector -- Fills the vector with elements from the stack ) 
 	DUP VectorSize
 	SWAP 2 CELLS + SWAP \ offset for the housekeeping cells
@@ -337,7 +336,7 @@ i . j . DUP . CR
 
 : .Vector ( Vector -- Prints the vector to stdout ) 
 	DUP VectorSize 1 + 1 DO
-		DUP i SWAP VectorElement@ . 
+		DUP i SWAP Vector@ . 
 		DUP VectorOrientation ColumnVector = IF \ Colum vector, separate by newlines
 			CR
 		THEN
@@ -348,7 +347,7 @@ i . j . DUP . CR
 : .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
    ." \begin{bmatrix}" CR
 	DUP VectorSize 1 + 1 DO
-		DUP i SWAP VectorElement@ . 
+		DUP i SWAP Vector@ . 
 			DUP VectorOrientation ColumnVector = IF \ Colum vector, vertical
 					." \\ " CR
 				ELSE \ Row vector, horizontal
@@ -367,7 +366,7 @@ i . j . DUP . CR
 \ at this stage I have only read about <> by <> so that is assumed
 \ as I read more
 	DUP VectorSize 1+ 1 DO \ Multiply the elements
-		OVER i SWAP VectorElement@ OVER i SWAP VectorElement@ *
+		OVER i SWAP Vector@ OVER i SWAP Vector@ *
 		ROT ROT \ put this product at the back
 	LOOP
 	DROP VectorSize 1 DO \ Sum the products
@@ -378,16 +377,34 @@ i . j . DUP . CR
 
 : FetchRow ( Row Matrix -- VectorAddr Creates a row vector from the specified row of a matrix ) 
 	\ initalize the matrix
-	DUP MatrixRows 
-	2 + CELLS Allocate \ allocate the memory for the matrix 
-	RowVector OVER !  \ set the type of vector
-	OVER MatrixRows SWAP 1 CELLS + ! \ set the vector dimensions
-	\ Row Matrix Vector 
-	
-	
+	DUP MatrixColumns 2 + CELLS ALLOCATE DROP \ allocate the memory for the matrix 
+	\ Set the matrix type
+	RowVector OVER !
+	\ Set the matrix dimensions
+	OVER MatrixColumns OVER 1 CELLS + !
+	( Row Matrix Vector )
+	OVER MatrixColumns 1 + 1 DO \ Need to pull elements off of the row and drop them into the vector
+		2 PICK  i  3 PICK  ( Row Matrix Vector i Row Matrix )
+		Matrix@ 
+		OVER i SWAP ( Row Matrix Vector Val i Vector )
+		Vector!
+	LOOP
+	SWAP DROP SWAP DROP
 ;
 
-\ Quick test matrix
+
+2 3 InitMatrix SampleMatrix
+11 12 13
+14 15 16
+SampleMatrix FillMatrix
+
+ColumnVector 3 InitVector TestVectorC
+1 2 3 TestVectorC FillVector
+
+RowVector 3 InitVector TestVectorR
+5 6 7 TestVectorR FillVector
+5 6 7 TestVectorR FillVector
+\ Quick test matrix.
 2 3 InitMatrix TestMatrix
  1  2  3 
  4  5  6 
