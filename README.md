@@ -6,7 +6,8 @@ Under construction with new features added as I progress through the course.  Cu
 Useful words:
 
 
-InitMatrix ( Row Col -- creates a matrix of Row by Col ) 
+InitMatrix ( Row Col "Variable" -- creates a matrix of Row by Col stored in word "Variable") 
+AllocateMatrix ( Row Col -- Matrix creates a matrix of Row by Col placed on the stack ) 
 Matrix@ ( Row Col Matrix-- Returns the value at that location of the matrix ) 
 Matrix! ( Value Row Col Matrix -- pushes Value to the locaton of the matrix )
 .MatrixRow ( Row Matrix -- prints out a given row )
@@ -26,7 +27,7 @@ S*, S/ ( N Matrix -- Multiplies/divides the matrix by the scalar value
 DuplicateMatris ( Matrix "<spaces>" Name -- Creates a new matrix with the same idmenstions and value as the first matrix with the address sotred in word Name )
 M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
 TransposeMatrix ( works with square matrixes )
-
+M* ( Matrix1 Matrix2 -- OutputMatrix Multiplies two matrixes and drops the address pointer of an output matrix ) 
 
 Vector functions: 
 ColumnVector ( flag that defines vector as a column )
@@ -41,13 +42,6 @@ FillVector ( n  . . . Vector -- Fills the vector with elements from the stack )
 .Vector ( Vector -- Prints the vector to stdout ) 
 .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
 
-Todo:: 
-
-Vectors
- - Generate
- - Multiply
- - extract from matrix
-
-Matrix multiplication
+V* ( Vector1 Vector2 -- n Multiplies two vectors and places the answer on the stack.  Only works with row v col matrixes ) 
 
 

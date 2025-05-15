@@ -13,12 +13,29 @@
 	! DROP
 	
 ;
+
+: AllocateMatrix ( Row Col -- Matrix creates a matrix of Row by Col )  ( var name )
+	\ Data format has the rows concatinated to create the colums with two extra cells at the beginning containing the number of rows and the number of columns
+
+	2DUP * 2 + CELLS ALLOCATE DROP \ Row * Col entries plus two for 
+                         \ keeping the size
+	\ Copy the row to Var[0]
+	ROT OVER !
+
+	\ Copy the col to Var[1]
+	DUP 1 CELLS + ROT SWAP !  
+;
+
 : MatrixColumns ( Matrix -- n returns the number of columns in the matrix ) 
   1 CELLS + @
 ;
 
 : MatrixRows ( Matrix - n returns the number of rows in the matrix )
  @
+;
+
+: .MatrixDim ( Matrix -- prints the dimension of the matrix ) 
+DUP MatrixRows . ." by " MatrixColumns .
 ;
 
 : MatrixOffset ( Row Col Matrix -- Offset Calculates the address offset of the matrix in cell count )
@@ -361,7 +378,7 @@ i . j . DUP . CR
 	DROP
 ;
 
-: *V ( Vector1 Vector2 -- Result  Multiplies vector 1 by vector 2 and puts the result on the stack ) 
+: V* ( Vector1 Vector2 -- Result  Multiplies vector 1 by vector 2 and puts the result on the stack ) 
 \ note that there are different processes depending on if the vector is a row or column vector
 \ at this stage I have only read about <> by <> so that is assumed
 \ as I read more
@@ -415,6 +432,30 @@ i . j . DUP . CR
 ;
 
 
+: M* { Matrix1 Matrix2 -- OutputMatrix Multiples 2 matrixes and puts a pointer to a new matrix with the product of those matrixes on the stack } 
+	\ 
+	Matrix2 MatrixRows Matrix1 MatrixColumns = IF \ have to be compatible
+		\ allocate and size
+		Matrix1 MatrixRows Matrix2 MatrixColumns AllocateMatrix 
+		\ process 
+		\ loop through row
+		Matrix1 MatrixRows 1 + 1 DO 
+			Matrix2 MatrixColumns 1 + 1 DO 
+			\ i is column, j is row
+			j Matrix1 FetchRow
+			i Matrix2 FetchColumn
+			\ fetch the vectors
+			( Matrix1 Matrix2 OutputMatrix Matrix1Row[j] Matrix2[i] )
+			2DUP V* 
+			SWAP FREE DROP SWAP FREE DROP \ multiply the vectors and free them 
+			OVER j i ROT Matrix!
+			LOOP
+		LOOP
+	ELSE
+		-1 ." Matrix size mismatch"
+	THEN
+;
+
 2 3 InitMatrix SampleMatrix
 11 12 13
 14 15 16
@@ -428,10 +469,10 @@ RowVector 3 InitVector TestVectorR
 
 
 \ Quick test matrix.
-3 3 InitMatrix TestMatrix
+3 2 InitMatrix TestMatrix
  1  2  3 
  4  5  6 
- 8 9 10
+\ 8 9 10
 TestMatrix FillMatrix
 
 2 3 InitMatrix SampleMatrix
