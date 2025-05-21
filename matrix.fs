@@ -121,6 +121,15 @@ DUP MatrixRows . ." by " MatrixColumns .
 	-1 +LOOP
 ;
 
+: DumpMatrix ( TargetMatrix -- n n n ... len Dumps the matrix to the stack followed by the count ) 
+	DUP MatrixRows OVER MatrixColumns * \ get the size of the matrix
+	DUP 0 DO ( Matrix Len )
+		OVER 2 i + CELLS + @ \ skip the housekeeping cells ( Matrix Len N )
+		ROT ROT ( N Matrix Len )
+	LOOP 
+	SWAP DROP 
+;
+
 : .LaTeXMatrix ( Matrix --  Prints out the matrix in LaTex format )
    ." \begin{bmatrix}" CR
    DUP MatrixRows 1 + 1 DO \ loop through the rows, 1 offset
@@ -260,7 +269,6 @@ DUP MatrixRows . ." by " MatrixColumns .
 	1 \ placeholder for the loop
 	OVER MatrixColumns 1 + 1 DO 
 		OVER MatrixRows 1 + 1 DO (  r_1 r_2 . . . Matrix r_n||placeholder )
-i . j . DUP . CR
 \ gotta mathhammer this part so it goes to the right place
 			SWAP DUP i j ROT Matrix@ 
 
