@@ -470,6 +470,36 @@ i . j . DUP . CR
 	THEN
 ;
 
+\ some quick convience functions
+: MatrixA ( Matrix -- n Returns the top right element of a 2x2 matrix ) 1 1 ROT Matrix@ ;
+: MatrixB ( Matrix -- n Returns the top left element of a 2x2 matrix ) 1 2 ROT Matrix@ ;
+: MatrixC ( Matrix -- n Returns the top left element of a 2x2 matrix ) 2 1 ROT Matrix@ ;
+: MatrixD ( Matrix -- n Returns the top left element of a 2x2 matrix ) 2 2 ROT Matrix@ ;
+
+: IsInvertable { Matrix -- n checks if a matrix is invertable and returns true or false }
+	Matrix MatrixA Matrix MatrixD * Matrix MatrixB Matrix MatrixC * - 0 <> 
+;
+
+: IMScalar { Matrix -- n Calculates the scalar multiplier for the inverse of the matrix and returns to stack }
+\ per theorem 7 from Understanding Linear Algebra
+	1 Matrix MatrixA Matrix MatrixD * Matrix MatrixB Matrix MatrixC * - / 
+;
+: IMSwap { Matrix -- Swaps out and negates the matrix for the inverse calculation }
+	Matrix MatrixA Matrix MatrixD 1 1 Matrix Matrix! 2 2 Matrix Matrix! \ swap a and d
+	Matrix MatrixB NEGATE  1 2 Matrix Matrix! 
+	Matrix MatrixC NEGATE  2 1 Matrix Matrix! 
+;
+
+: InverseMatrix  ( Matrix -- calculates the inverse of the matrix in-place, currently only works with  )
+\ per theorem 7 from Understanding Linear Algebra
+	DUP IF  \ Matrix has an inverse
+		DUP IMScalar OVER IMSwap SWAP S* 
+	ELSE 
+		." Matrix does not have an inverse"
+		DROP
+	THEN
+;
+
 : VectorLength ( Vector -- Length computes the length of the vector and returns it to the stack ) 
 	1 OVER Vector@ Square SWAP 2 SWAP Vector@ Square + Sqrt 
 ;
@@ -486,9 +516,9 @@ RowVector 3 InitVector TestVectorR
 
 
 \ Quick test matrix.
-3 2 InitMatrix TestMatrix
+2 2 InitMatrix TestMatrix
  1  2  3 
- 4  5  6 
+ 4 \ 5  6 
 \ 8 9 10
 TestMatrix FillMatrix
 
