@@ -511,6 +511,15 @@ DUP MatrixRows . ." by " MatrixColumns .
 : VectorLength ( Vector -- Length computes the length of the vector and returns it to the stack ) 
 	1 OVER Vector@ Square SWAP 2 SWAP Vector@ Square + Sqrt 
 ;
+
+: Determinant { TargetMatrix -- n computes the determinant of the matrix and puts it on the stack, currenly only works with 2x2 matrixes } 
+	TargetMatrix MatrixColumns TargetMatrix MatrixRows = IF \ make sure the matrix is square
+		1 1 TargetMatrix Matrix@ 2 2 Targetmatrix Matrix@ * 2 1 Targetmatrix Matrix@ 1 2 TargetMatrix Matrix@ * - 
+	ELSE \ not square
+		." Matrix needs to be square"
+	THEN
+;
+
 2 3 InitMatrix SampleMatrix
 11 12 13
 14 15 16

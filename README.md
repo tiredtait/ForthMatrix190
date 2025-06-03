@@ -16,6 +16,7 @@ FillMatrixRow ( N1 N2 . . . Row Matrix -- Fills a row with data from the colums.
 MatrixColumns ( Matrix -- n returns the number of columns in the matrix ) 
 MatrixColumns ( Matrix - n returns the number of rows in the matrix )
 FillMatrix ( N1 N2 . . . Matrix -- Fills the entire matrix from the stack )  
+DumpMatrix ( Matrix -- N1 N2 ... Len Dumps the content of the matrix to the stack followed by the number of items dumped )
 .LaTeXMatrix ( Matrix --  Prints out the matrix in LaTex format )
 MultiplyRow ( Coefficient Row Matrix -- Multiples a single row by Coefficient )
 DivideRow ( Coefficient Row Matrix -- Divides a single row by Coefficient )
@@ -28,6 +29,7 @@ DuplicateMatris ( Matrix "<spaces>" Name -- Creates a new matrix with the same i
 M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the result in Matrix2)
 TransposeMatrix ( works with square matrixes )
 M* ( Matrix1 Matrix2 -- OutputMatrix Multiplies two matrixes and drops the address pointer of an output matrix ) 
+InvertMatrix ( Matrix -- calculates the inverse of the matrix in-place )
 
 Vector functions: 
 ColumnVector ( flag that defines vector as a column )
@@ -41,13 +43,13 @@ FillVector ( n  . . . Vector -- Fills the vector with elements from the stack )
 .VectorOrientation ( Vector -- Prints if a vector is column or row ) 
 .Vector ( Vector -- Prints the vector to stdout ) 
 .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
-
 V* ( Vector1 Vector2 -- n Multiplies two vectors and places the answer on the stack.  Only works with row v col matrixes ) 
+Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack, currently only works with 2x2 matrices ) 
 VectorLength ( Vector -- n returns the length of the vector )
 
 building blocks:
 Square: Squares the number
 Sqrt: Returns the integer square root, currently only works for numbers under 100
 
-
-
+Todo: 
+RREF 
