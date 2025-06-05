@@ -30,6 +30,7 @@ M+, M- ( Matrix1 Matrix2 -- adds/subtracts Matrix1 from Matrix2, storing the res
 TransposeMatrix ( works with square matrixes )
 M* ( Matrix1 Matrix2 -- OutputMatrix Multiplies two matrixes and drops the address pointer of an output matrix ) 
 InvertMatrix ( Matrix -- calculates the inverse of the matrix in-place )
+Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack. Works with any matrix with n>=2 )
 
 Vector functions: 
 ColumnVector ( flag that defines vector as a column )
@@ -44,7 +45,6 @@ FillVector ( n  . . . Vector -- Fills the vector with elements from the stack )
 .Vector ( Vector -- Prints the vector to stdout ) 
 .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
 V* ( Vector1 Vector2 -- n Multiplies two vectors and places the answer on the stack.  Only works with row v col matrixes ) 
-Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack. Works with any matrix with n>=2 )
 VectorLength ( Vector -- n returns the length of the vector )
 
 building blocks:
