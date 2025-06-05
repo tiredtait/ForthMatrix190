@@ -567,7 +567,7 @@ DUP MatrixRows . ." by " MatrixColumns .
 				ELSE
 					RECURSE \ bigger than 2x2, do it again
 				THEN
-				i -1^ * 1 i TargetMatrix Matrix@ * + \ cofactor, odd/even, this column's value, add to the return value
+				i 1 + -1^ * 1 i TargetMatrix Matrix@ * + \ cofactor, odd/even, this column's value, add to the return value
 			LOOP
 		THEN
 	ELSE \ not square
