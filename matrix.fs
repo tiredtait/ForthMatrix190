@@ -478,6 +478,15 @@ DUP MatrixRows . ." by " MatrixColumns .
 	THEN
 ;
 
+: -1^ ( n -- n returns -1 * n ) 
+	\ returns -1 or 1 depending if it is odd or even, don't need to run the full calculation
+	2 MOD 0 = IF \ even
+		1
+	ELSE
+		-1
+	THEN
+;
+
 \ some quick convience functions
 : MatrixA ( Matrix -- n Returns the top right element of a 2x2 matrix ) 1 1 ROT Matrix@ ;
 : MatrixB ( Matrix -- n Returns the top left element of a 2x2 matrix ) 1 2 ROT Matrix@ ;
@@ -512,17 +521,71 @@ DUP MatrixRows . ." by " MatrixColumns .
 	1 OVER Vector@ Square SWAP 2 SWAP Vector@ Square + Sqrt 
 ;
 
-: Determinant { TargetMatrix -- n computes the determinant of the matrix and puts it on the stack, currenly only works with 2x2 matrixes } 
+: CFSlice { SkipRow SkipCol TargetMatrix -- Matrix   Creates a matrix from TargetMatrix without the Row and Column }
+		TargetMatrix MatrixRows 1 - TargetMatrix MatrixColumns 1 - AllocateMatrix 
+		DUP \ one copy at the bottom of the stack to return, one copy at the top of the stack to fill
+		TargetMatrix MatrixRows 1 + 1 DO \ loop through the rows
+			\ i is row
+			i SkipRow <> IF \ 
+				TargetMatrix MatrixColumns 1 + 1 DO \ loop through the rows
+					\ i is column, j is row
+					i SkipCol <> IF \ 
+						j i TargetMatrix Matrix@ SWAP \ drop the matrix cell and move it behind the new matrix address
+					THEN
+				LOOP
+			THEN
+		LOOP
+		FillMatrix
+;
+
+
+: 2x2Determinant { TargetMatrix -- n computes the determinant of the 2x2 matrix and puts it on the stack } 
 	TargetMatrix MatrixColumns TargetMatrix MatrixRows = IF \ make sure the matrix is square
-		1 1 TargetMatrix Matrix@ 2 2 Targetmatrix Matrix@ * 2 1 Targetmatrix Matrix@ 1 2 TargetMatrix Matrix@ * - 
+		TargetMatrix MatrixA Targetmatrix MatrixD * Targetmatrix MatrixB TargetMatrix MatrixC * - 
 	ELSE \ not square
 		." Matrix needs to be square"
 	THEN
 ;
 
-2 3 InitMatrix SampleMatrix
-11 12 13
-14 15 16
+: 3x3MatrixCofactor ( Row Column Matrix -- Cofactor Calculates the cofactor of the matrix sans row and column and places it on the stack, corruently works with 3x3 matrixes )
+	2 PICK 2 PICK 2 PICK \ dup the top 3 items
+	CFSlice 2x2Determinant \ row col matrix determinant
+	SWAP DROP ROT ROT \ determinant row col
+	+ -1^ * \ Cofactor
+;
+
+: Determinant { TargetMatrix -- n computes the determinant of the 2x2 matrix and puts it on the stack } 
+	TargetMatrix MatrixColumns TargetMatrix MatrixRows = IF \ make sure the matrix is square
+		TargetMatrix MatrixColumns 2 = IF \ 2x2 Matrix
+			TargetMatrix 2x2Determinant	
+		ELSE \ Not a 2x2 matrix
+			0 \ return value
+			TargetMatrix MatrixColumns 1 + 1 DO \ loop through the Columns, slicing the colum from the matrix and calculate the cofactor of each row
+				1 i TargetMatrix CFSlice
+				DUP MatrixColumns 2 = IF \ results in a 2x2 matrix, can solve
+					2x2Determinant 
+				ELSE
+					RECURSE \ bigger than 2x2, do it again
+				THEN
+				i -1^ * 1 i TargetMatrix Matrix@ * + \ cofactor, odd/even, this column's value, add to the return value
+			LOOP
+		THEN
+	ELSE \ not square
+		." Matrix needs to be square"
+	THEN
+;
+
+4 4 InitMatrix BigMatrix
+1 2 1 2
+-1 2 3 4 
+8 5 -3 1 
+5 9 -6 3 BigMatrix FillMatrix
+
+
+3 3 InitMatrix SampleMatrix
+1 2 3
+4 5 6
+7 8 9 
 SampleMatrix FillMatrix
 
 ColumnVector 3 InitVector TestVectorC
@@ -539,8 +602,4 @@ RowVector 3 InitVector TestVectorR
 \ 8 9 10
 TestMatrix FillMatrix
 
-2 3 InitMatrix SampleMatrix
-11 12 13
-14 15 16
-SampleMatrix FillMatrix
 

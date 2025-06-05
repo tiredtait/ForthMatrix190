@@ -44,12 +44,13 @@ FillVector ( n  . . . Vector -- Fills the vector with elements from the stack )
 .Vector ( Vector -- Prints the vector to stdout ) 
 .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
 V* ( Vector1 Vector2 -- n Multiplies two vectors and places the answer on the stack.  Only works with row v col matrixes ) 
-Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack, currently only works with 2x2 matrices ) 
+Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack. Works with any matrix with n>=2 )
 VectorLength ( Vector -- n returns the length of the vector )
 
 building blocks:
 Square: Squares the number
 Sqrt: Returns the integer square root, currently only works for numbers under 100
+-1^: raises -1 to the power of the number at the top of the stack, effectively odds/evens
 
 Todo: 
 RREF 
