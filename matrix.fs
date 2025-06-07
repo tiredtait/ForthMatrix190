@@ -575,6 +575,29 @@ DUP MatrixRows . ." by " MatrixColumns .
 	THEN
 ;
 
+: MatrixColumnSlice { Start End TargetMatrix -- Matrix  returns a matrix consisting of colums Start to End of the Target matrix }
+	TargetMatrix MatrixRows End Start - 1+  AllocateMatrix DUP \ make a matrix that has the same number of columns but just fits the target number of rows
+	End 1+ Start DO \ loop through the matrix
+	 	TargetMatrix MatrixRows 1+ 1 DO
+			j i TargetMatrix Matrix@ SWAP
+		LOOP 
+	LOOP 
+	FillMatrix
+	
+;
+
+: MatrixRowSlice { Start End TargetMatrix -- Matrix  returns a matrix consisting of rows Start to End of the Target matrix }
+	End Start - 1+ TargetMatrix MatrixColumns AllocateMatrix DUP \ make a matrix that has the same number of columns but just fits the target number of rows
+	End 1+ Start DO \ loop through the matrix
+	 	TargetMatrix MatrixColumns 1+ 1 DO
+			j i TargetMatrix Matrix@ SWAP
+		LOOP 
+	LOOP 
+	FillMatrix
+	
+;
+
+
 4 4 InitMatrix BigMatrix
 1 2 1 2
 -1 2 3 4 
@@ -601,5 +624,4 @@ RowVector 3 InitVector TestVectorR
  4 \ 5  6 
 \ 8 9 10
 TestMatrix FillMatrix
-
 

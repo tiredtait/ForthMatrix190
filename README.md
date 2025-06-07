@@ -31,6 +31,8 @@ TransposeMatrix ( works with square matrixes )
 M* ( Matrix1 Matrix2 -- OutputMatrix Multiplies two matrixes and drops the address pointer of an output matrix ) 
 InvertMatrix ( Matrix -- calculates the inverse of the matrix in-place )
 Determinant ( TargetMatrix -- n computes the determinant of the matrix and puts it on the stack. Works with any matrix with n>=2 )
+MatrixColumnSlice { Start End TargetMatrix -- Matrix  returns a matrix consisting of colums Start to End of the Target matrix }
+MatrixRowSlice { Start End TargetMatrix -- Matrix  returns a matrix consisting of rows Start to End of the Target matrix }
 
 Vector functions: 
 ColumnVector ( flag that defines vector as a column )
