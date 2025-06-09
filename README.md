@@ -48,6 +48,8 @@ FillVector ( n  . . . Vector -- Fills the vector with elements from the stack )
 .LaTeXVector ( Vector -- Prints the vector to stdout formatted for LaTeX ) 
 V* ( Vector1 Vector2 -- n Multiplies two vectors and places the answer on the stack.  Only works with row v col matrixes ) 
 VectorLength ( Vector -- n returns the length of the vector )
+MatrixRowSub ( RowNum SubMatrix TargetMatrix -- Matrix  substitute nx1 row matrix RowNum row in nxm matrix )
+MatrixColSub ( ColNum SubMatrix TargetMatrix -- Matrix  substitute 1xm column matrix ColNum Column in nxm matrix )
 
 building blocks:
 Square: Squares the number

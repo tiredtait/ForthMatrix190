@@ -597,7 +597,39 @@ DUP MatrixRows . ." by " MatrixColumns .
 	
 ;
 
+: MatrixRowSub { RowNum SubMatrix TargetMatrix -- Matrix  substitute nx1 row matrix RowNum row in nxm matrix } 
+	TargetMatrix MatrixRows TargetMatrix MatrixColumns AllocateMatrix DUP \ create the output matrix, one to keep at the top of the stack to fill and one to leave at the bottom to return
+	TargetMatrix MatrixRows 1+ 1 DO
+		TargetMatrix MatrixColumns 1+ 1 DO
+		\ j: Row i: colum
+			RowNum j = IF \ substitute row
+				1 i SubMatrix 
+			ELSE
+				j i TargetMatrix
+			THEN
+			Matrix@
+			SWAP
+		LOOP
+	LOOP
+	FillMatrix
+;
 
+
+
+	TargetMatrix MatrixRows 1+ 1 DO
+		TargetMatrix MatrixColumns 1+ 1 DO
+		\ j: Row i: column
+			ColNum i = IF \ substitute row
+				j 1 SubMatrix 
+			ELSE
+				j i TargetMatrix
+			THEN
+			Matrix@
+			SWAP
+		LOOP
+	LOOP
+	FillMatrix
+;
 4 4 InitMatrix BigMatrix
 1 2 1 2
 -1 2 3 4 
