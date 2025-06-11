@@ -615,6 +615,8 @@ DUP MatrixRows . ." by " MatrixColumns .
 ;
 
 
+: MatrixColSub { ColNum SubMatrix TargetMatrix -- Matrix  substitute 1xn col matrix ColNum column in nxm matrix } 
+	TargetMatrix MatrixRows TargetMatrix MatrixColumns AllocateMatrix DUP \ create the output matrix, one to keep at the top of the stack to fill and one to leave at the bottom to return
 
 	TargetMatrix MatrixRows 1+ 1 DO
 		TargetMatrix MatrixColumns 1+ 1 DO
@@ -630,6 +632,27 @@ DUP MatrixRows . ." by " MatrixColumns .
 	LOOP
 	FillMatrix
 ;
+
+
+: Cramer ( Replacement Column Matrix -- Performs cramers rule ) 
+	ROT OVER 3 ROLL SWAP MatrixColSub Determinant
+	SWAP Determinant SWAP / 
+;
+
+: Egenvalues ( Matrix -- ev1 ev2 Currently works with 2x2 matrixes, returns the egenvalues of the matrix to the stack ) 
+	\ need to turn the matrix det from ad-bc to x^2 + Bx + C
+	DUP MatrixA OVER MatrixD 2DUP + NEGATE ROT ROT * \ Matrix B C(partial) 
+	ROT DUP MatrixC SWAP MatrixB * - \ B C
+	\ now solve for quadrtic
+	OVER SQUARE SWAP 4 * - SQRT 
+
+	SWAP NEGATE SWAP
+	2DUP 
+	- 2 /
+	ROT ROT  
+	+ 2 / 
+;
+
 4 4 InitMatrix BigMatrix
 1 2 1 2
 -1 2 3 4 
